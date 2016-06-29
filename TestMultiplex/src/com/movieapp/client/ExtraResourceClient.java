@@ -6,49 +6,49 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import com.movieapp.beans.Category;
-import com.movieapp.wrappers.CategoryWrapper;
+import com.movieapp.beans.Extra;
+import com.movieapp.wrappers.ExtraWrapper;
 
-public class CategoryResourceClient {
+public class ExtraResourceClient {
 	
 	private WebTarget service;
 	
-	public CategoryResourceClient(WebTarget service){
+	public ExtraResourceClient(WebTarget service){
 		this.service = service;
 	}
 	
-	public Category addCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public Extra addExtra(Extra row){
+		ExtraWrapper payload = new ExtraWrapper();
+		payload.setExtra(row);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		ExtraWrapper resBundle = service.path("rest").path("extras").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), ExtraWrapper.class);
+		Extra res = resBundle.getExtra();
 		return res;
 	}
-	public void deleteCategory(Long categoryId){
-		service.path("rest").path("categories").path(categoryId+"").request(MediaType.TEXT_PLAIN)
+	public void deleteExtra(Long rowId){
+		service.path("rest").path("extras").path(rowId+"").request(MediaType.TEXT_PLAIN)
 				.delete();
 	}
-	public List<Category> getAllCategories(){
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		List<Category> res = resBundle.getCategories();
+	public List<Extra> getAllExtras(){
+		ExtraWrapper resBundle = service.path("rest").path("extras").request(MediaType.APPLICATION_JSON)
+				.get(ExtraWrapper.class);
+		List<Extra> res = resBundle.getExtras();
 		return res;
 	}
-	public Category getCategoryById(Long categoryId){
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(categoryId+"").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+	public Extra getExtraById(Long rowId){
+		ExtraWrapper resBundle = service.path("rest").path("extras").path(rowId+"").request(MediaType.APPLICATION_JSON)
+				.get(ExtraWrapper.class);
+		Extra res = resBundle.getExtra();
 		return res;
 	}
-	public Category updateCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public Extra updateExtra(Extra row){
+		ExtraWrapper payload = new ExtraWrapper();
+		payload.setExtra(row);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(category.getId()+"").request(MediaType.APPLICATION_JSON)
-				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		ExtraWrapper resBundle = service.path("rest").path("extras").path(row.getId()+"").request(MediaType.APPLICATION_JSON)
+				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), ExtraWrapper.class);
+		Extra res = resBundle.getExtra();
 		return res;
 	}
 	

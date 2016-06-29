@@ -6,49 +6,51 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import com.movieapp.beans.Category;
-import com.movieapp.wrappers.CategoryWrapper;
+import com.movieapp.beans.Seat;
+import com.movieapp.wrappers.SeatWrapper;
 
-public class CategoryResourceClient {
+public class SeatResourceClient {
 	
 	private WebTarget service;
 	
-	public CategoryResourceClient(WebTarget service){
+	public SeatResourceClient(WebTarget service){
 		this.service = service;
 	}
 	
-	public Category addCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public Seat addSeat(Seat row){
+		SeatWrapper payload = new SeatWrapper();
+		payload.setSeat(row);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		SeatWrapper resBundle = service.path("rest").path("seats").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), SeatWrapper.class);
+		System.out.println(resBundle);
+		Seat res = resBundle.getSeat();
+		System.out.println(res);
 		return res;
 	}
-	public void deleteCategory(Long categoryId){
-		service.path("rest").path("categories").path(categoryId+"").request(MediaType.TEXT_PLAIN)
+	public void deleteSeat(Long rowId){
+		service.path("rest").path("seats").path(rowId+"").request(MediaType.TEXT_PLAIN)
 				.delete();
 	}
-	public List<Category> getAllCategories(){
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		List<Category> res = resBundle.getCategories();
+	public List<Seat> getAllSeats(){
+		SeatWrapper resBundle = service.path("rest").path("seats").request(MediaType.APPLICATION_JSON)
+				.get(SeatWrapper.class);
+		List<Seat> res = resBundle.getSeats();
 		return res;
 	}
-	public Category getCategoryById(Long categoryId){
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(categoryId+"").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+	public Seat getSeatById(Long rowId){
+		SeatWrapper resBundle = service.path("rest").path("seats").path(rowId+"").request(MediaType.APPLICATION_JSON)
+				.get(SeatWrapper.class);
+		Seat res = resBundle.getSeat();
 		return res;
 	}
-	public Category updateCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public Seat updateSeat(Seat row){
+		SeatWrapper payload = new SeatWrapper();
+		payload.setSeat(row);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(category.getId()+"").request(MediaType.APPLICATION_JSON)
-				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		SeatWrapper resBundle = service.path("rest").path("seats").path(row.getId()+"").request(MediaType.APPLICATION_JSON)
+				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), SeatWrapper.class);
+		Seat res = resBundle.getSeat();
 		return res;
 	}
 	

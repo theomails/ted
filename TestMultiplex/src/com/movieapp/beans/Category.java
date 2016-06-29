@@ -41,6 +41,11 @@ public class Category {
 	public void setFare(Float categoryFare) {
 		this.fare = categoryFare;
 	}
+
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", categoryName=" + categoryName + ", fare=" + fare + "]";
+	}
 	
 	
 

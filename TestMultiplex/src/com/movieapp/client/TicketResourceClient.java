@@ -6,49 +6,51 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import com.movieapp.beans.Category;
-import com.movieapp.wrappers.CategoryWrapper;
+import com.movieapp.beans.Ticket;
+import com.movieapp.wrappers.TicketWrapper;
 
-public class CategoryResourceClient {
+public class TicketResourceClient {
 	
 	private WebTarget service;
 	
-	public CategoryResourceClient(WebTarget service){
+	public TicketResourceClient(WebTarget service){
 		this.service = service;
 	}
 	
-	public Category addCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public Ticket addTicket(Ticket row){
+		TicketWrapper payload = new TicketWrapper();
+		payload.setTicket(row);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		TicketWrapper resBundle = service.path("rest").path("tickets").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), TicketWrapper.class);
+		System.out.println(resBundle);
+		Ticket res = resBundle.getTicket();
+		System.out.println(res);
 		return res;
 	}
-	public void deleteCategory(Long categoryId){
-		service.path("rest").path("categories").path(categoryId+"").request(MediaType.TEXT_PLAIN)
+	public void deleteTicket(Long rowId){
+		service.path("rest").path("tickets").path(rowId+"").request(MediaType.TEXT_PLAIN)
 				.delete();
 	}
-	public List<Category> getAllCategories(){
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		List<Category> res = resBundle.getCategories();
+	public List<Ticket> getAllTickets(){
+		TicketWrapper resBundle = service.path("rest").path("tickets").request(MediaType.APPLICATION_JSON)
+				.get(TicketWrapper.class);
+		List<Ticket> res = resBundle.getTickets();
 		return res;
 	}
-	public Category getCategoryById(Long categoryId){
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(categoryId+"").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+	public Ticket getTicketById(Long rowId){
+		TicketWrapper resBundle = service.path("rest").path("tickets").path(rowId+"").request(MediaType.APPLICATION_JSON)
+				.get(TicketWrapper.class);
+		Ticket res = resBundle.getTicket();
 		return res;
 	}
-	public Category updateCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public Ticket updateTicket(Ticket row){
+		TicketWrapper payload = new TicketWrapper();
+		payload.setTicket(row);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(category.getId()+"").request(MediaType.APPLICATION_JSON)
-				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		TicketWrapper resBundle = service.path("rest").path("tickets").path(row.getId()+"").request(MediaType.APPLICATION_JSON)
+				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), TicketWrapper.class);
+		Ticket res = resBundle.getTicket();
 		return res;
 	}
 	

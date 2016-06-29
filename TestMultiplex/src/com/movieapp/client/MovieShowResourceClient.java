@@ -6,49 +6,51 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import com.movieapp.beans.Category;
-import com.movieapp.wrappers.CategoryWrapper;
+import com.movieapp.beans.MovieShow;
+import com.movieapp.wrappers.MovieShowWrapper;
 
-public class CategoryResourceClient {
+public class MovieShowResourceClient {
 	
 	private WebTarget service;
 	
-	public CategoryResourceClient(WebTarget service){
+	public MovieShowResourceClient(WebTarget service){
 		this.service = service;
 	}
 	
-	public Category addCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public MovieShow addMovieShow(MovieShow row){
+		MovieShowWrapper payload = new MovieShowWrapper();
+		payload.setMovieshow(row);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		MovieShowWrapper resBundle = service.path("rest").path("movieshows").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), MovieShowWrapper.class);
+		System.out.println(resBundle);
+		MovieShow res = resBundle.getMovieshow();
+		System.out.println(res);
 		return res;
 	}
-	public void deleteCategory(Long categoryId){
-		service.path("rest").path("categories").path(categoryId+"").request(MediaType.TEXT_PLAIN)
+	public void deleteMovieShow(Long rowId){
+		service.path("rest").path("movieshows").path(rowId+"").request(MediaType.TEXT_PLAIN)
 				.delete();
 	}
-	public List<Category> getAllCategories(){
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		List<Category> res = resBundle.getCategories();
+	public List<MovieShow> getAllMovieShows(){
+		MovieShowWrapper resBundle = service.path("rest").path("movieshows").request(MediaType.APPLICATION_JSON)
+				.get(MovieShowWrapper.class);
+		List<MovieShow> res = resBundle.getMovieshows();
 		return res;
 	}
-	public Category getCategoryById(Long categoryId){
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(categoryId+"").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+	public MovieShow getMovieShowById(Long rowId){
+		MovieShowWrapper resBundle = service.path("rest").path("movieshows").path(rowId+"").request(MediaType.APPLICATION_JSON)
+				.get(MovieShowWrapper.class);
+		MovieShow res = resBundle.getMovieshow();
 		return res;
 	}
-	public Category updateCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public MovieShow updateMovieShow(MovieShow row){
+		MovieShowWrapper payload = new MovieShowWrapper();
+		payload.setMovieshow(row);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(category.getId()+"").request(MediaType.APPLICATION_JSON)
-				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		MovieShowWrapper resBundle = service.path("rest").path("movieshows").path(row.getId()+"").request(MediaType.APPLICATION_JSON)
+				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), MovieShowWrapper.class);
+		MovieShow res = resBundle.getMovieshow();
 		return res;
 	}
 	

@@ -6,49 +6,49 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import com.movieapp.beans.Category;
-import com.movieapp.wrappers.CategoryWrapper;
+import com.movieapp.beans.Customer;
+import com.movieapp.wrappers.CustomerWrapper;
 
-public class CategoryResourceClient {
+public class CustomerResourceClient {
 	
 	private WebTarget service;
 	
-	public CategoryResourceClient(WebTarget service){
+	public CustomerResourceClient(WebTarget service){
 		this.service = service;
 	}
 	
-	public Category addCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public Customer addCustomer(Customer customer){
+		CustomerWrapper payload = new CustomerWrapper();
+		payload.setCustomer(customer);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		CustomerWrapper resBundle = service.path("rest").path("customers").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(payload, MediaType.APPLICATION_JSON), CustomerWrapper.class);
+		Customer res = resBundle.getCustomer();
 		return res;
 	}
-	public void deleteCategory(Long categoryId){
-		service.path("rest").path("categories").path(categoryId+"").request(MediaType.TEXT_PLAIN)
+	public void deleteCustomer(Long customerId){
+		service.path("rest").path("customers").path(customerId+"").request(MediaType.TEXT_PLAIN)
 				.delete();
 	}
-	public List<Category> getAllCategories(){
-		CategoryWrapper resBundle = service.path("rest").path("categories").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		List<Category> res = resBundle.getCategories();
+	public List<Customer> getAllCustomers(){
+		CustomerWrapper resBundle = service.path("rest").path("customers").request(MediaType.APPLICATION_JSON)
+				.get(CustomerWrapper.class);
+		List<Customer> res = resBundle.getCustomers();
 		return res;
 	}
-	public Category getCategoryById(Long categoryId){
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(categoryId+"").request(MediaType.APPLICATION_JSON)
-				.get(CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+	public Customer getCustomerById(Long customerId){
+		CustomerWrapper resBundle = service.path("rest").path("customers").path(customerId+"").request(MediaType.APPLICATION_JSON)
+				.get(CustomerWrapper.class);
+		Customer res = resBundle.getCustomer();
 		return res;
 	}
-	public Category updateCategory(Category category){
-		CategoryWrapper payload = new CategoryWrapper();
-		payload.setCategory(category);
+	public Customer updateCustomer(Customer customer){
+		CustomerWrapper payload = new CustomerWrapper();
+		payload.setCustomer(customer);
 		
-		CategoryWrapper resBundle = service.path("rest").path("categories").path(category.getId()+"").request(MediaType.APPLICATION_JSON)
-				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), CategoryWrapper.class);
-		Category res = resBundle.getCategory();
+		CustomerWrapper resBundle = service.path("rest").path("customers").path(customer.getId()+"").request(MediaType.APPLICATION_JSON)
+				.put(Entity.entity(payload, MediaType.APPLICATION_JSON), CustomerWrapper.class);
+		Customer res = resBundle.getCustomer();
 		return res;
 	}
 	
