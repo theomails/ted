@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.movieapp.beans.Seat;
 
 
 @JsonInclude(Include.NON_NULL)
@@ -15,7 +14,7 @@ public class ScreenInclSeats {
 	  private String screenName;
 	  private int screenRows;
 	  private int screenColumns;
-	  private List<Seat> seats;
+	  private List<Long> seats;
 	  
 	  
 		  
@@ -24,7 +23,7 @@ public class ScreenInclSeats {
 		super();
 	}
 	  
-	public ScreenInclSeats(Long id,String screenName,int rows,int cols, List<Seat> seats)
+	public ScreenInclSeats(Long id,String screenName,int rows,int cols, List<Long> seats)
 	{
 		this.screenName=screenName;
 		this.screenRows=rows;
@@ -58,11 +57,11 @@ public class ScreenInclSeats {
 		this.screenColumns = cols;
 	}
 
-	public List<Seat> getSeats() {
+	public List<Long> getSeats() {
 		return seats;
 	}
 
-	public void setSeats(List<Seat> seats) {
+	public void setSeats(List<Long> seats) {
 		this.seats = seats;
 	}
 	

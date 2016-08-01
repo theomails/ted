@@ -17,10 +17,14 @@ public class MovieResourceTest {
 
 	private MovieResourceClient client = null;
 	
-	@Before
-	public void setUp() throws Exception {
+	public MovieResourceTest() {
 		WebTarget service = TestHelper.getService();
 		client = new MovieResourceClient(service);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		
 	}
 
 	@After
@@ -29,10 +33,11 @@ public class MovieResourceTest {
 
 	@Test
 	public void addMovie() {
-		Movie row = new Movie(101l, "Movie1", "Genere1", "Category1", "Certificate1", "Language1", "Duration1", "Description1", "ImageUrl1", "01-01-2001");
+		String movieName = "Movie" + System.nanoTime();
+		Movie row = new Movie(101l, movieName, "Genere1", "Category1", "Certificate1", "Language1", "Duration1", "Description1", "ImageUrl1", "01-01-2001");
 		row = client.addMovie(row);
 		Assert.assertNotEquals(101l, row.getId().longValue());
-		Assert.assertEquals("Movie1", row.getMovieName());
+		Assert.assertEquals(movieName, row.getMovieName());
 		Assert.assertEquals("Genere1", row.getGenre());
 		Assert.assertEquals("Category1", row.getCategory());
 		Assert.assertEquals("Certificate1", row.getCertificate());
@@ -46,14 +51,20 @@ public class MovieResourceTest {
 	@Test
 	public void getMovies() {
 		List<Movie> rows = client.getAllMovies();
+		if(rows==null || rows.size()==0) {
+			addMovie();
+			rows = client.getAllMovies();
+		}
 		Assert.assertNotNull(rows);
 	}
 
 	@Test
 	public void getMovie() {
 		List<Movie> rows = client.getAllMovies();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0) {
+			addMovie();
+			rows = client.getAllMovies();
+		}
 		
 		Movie rowOri = rows.get(0);
 		Movie rowFound = client.getMovieById(rowOri.getId());
@@ -73,11 +84,14 @@ public class MovieResourceTest {
 	@Test
 	public void updateMovie() {
 		List<Movie> rows = client.getAllMovies();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0) {
+			addMovie();
+			rows = client.getAllMovies();
+		}
 		
+		String movieName = "Movie" + System.nanoTime();
 		Movie rowOri = rows.get(0);
-		rowOri.setMovieName("Movie1a");
+		rowOri.setMovieName(movieName);
 		rowOri.setGenre("Genere1a");
 		rowOri.setCategory("Category1a");
 		rowOri.setCertificate("Certificate1a");
@@ -91,7 +105,7 @@ public class MovieResourceTest {
 		
 		//Returned value is updated value
 		Assert.assertNotEquals(101l, rowOri.getId().longValue());
-		Assert.assertEquals("Movie1a", rowOri.getMovieName());
+		Assert.assertEquals(movieName, rowOri.getMovieName());
 		Assert.assertEquals("Genere1a", rowOri.getGenre());
 		Assert.assertEquals("Category1a", rowOri.getCategory());
 		Assert.assertEquals("Certificate1a", rowOri.getCertificate());
@@ -106,7 +120,7 @@ public class MovieResourceTest {
 		
 		//Got value is updated value
 		Assert.assertEquals(rowOri.getId(), rowFound.getId());
-		Assert.assertEquals("Movie1a", rowFound.getMovieName());
+		Assert.assertEquals(movieName, rowFound.getMovieName());
 		Assert.assertEquals("Genere1a", rowFound.getGenre());
 		Assert.assertEquals("Category1a", rowFound.getCategory());
 		Assert.assertEquals("Certificate1a", rowFound.getCertificate());
@@ -121,8 +135,10 @@ public class MovieResourceTest {
 	@Test
 	public void deleteMovie() {
 		List<Movie> rows = client.getAllMovies();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0) {
+			addMovie();
+			rows = client.getAllMovies();
+		}
 		
 		Movie rowOri = rows.get(0);
 		System.out.println(rowOri);

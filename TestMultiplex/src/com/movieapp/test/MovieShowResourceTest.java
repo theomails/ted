@@ -26,13 +26,17 @@ public class MovieShowResourceTest {
 	private MovieResourceClient movclient = null;
 	private ShowResourceClient showclient = null;
 	
-	@Before
-	public void setUp() throws Exception {
+	public MovieShowResourceTest() {
 		WebTarget service = TestHelper.getService();
 		client = new MovieShowResourceClient(service);
 		scrclient = new ScreenResourceClient(service);
 		movclient = new MovieResourceClient(service);
 		showclient = new ShowResourceClient(service);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		
 	}
 
 	@After
@@ -42,8 +46,23 @@ public class MovieShowResourceTest {
 	@Test
 	public void addMovieShow() {
 		List<ScreenInclSeats> screens = scrclient.getAllScreens();
+		if(screens==null || screens.size()==0){
+			ScreenResourceTest srt = new ScreenResourceTest();
+			srt.addScreen();
+			screens = scrclient.getAllScreens();
+		}
 		List<Movie> movies = movclient.getAllMovies();
+		if(movies==null || movies.size()==0){
+			MovieResourceTest mrt = new MovieResourceTest();
+			mrt.addMovie();
+			movies = movclient.getAllMovies();
+		}
 		List<Show> shows = showclient.getAllShows();
+		if(shows==null || shows.size()==0){
+			ShowResourceTest srt = new ShowResourceTest();
+			srt.addShow();
+			shows = showclient.getAllShows();
+		}
 		ScreenInclSeats scr = screens.get(0);
 		Movie mov = movies.get(0);
 		Show show = shows.get(0);
@@ -61,14 +80,20 @@ public class MovieShowResourceTest {
 	@Test
 	public void getMovieShows() {
 		List<MovieShow> rows = client.getAllMovieShows();
+		if(rows==null || rows.size()==0){
+			addMovieShow();
+			rows = client.getAllMovieShows();
+		}
 		Assert.assertNotNull(rows);
 	}
 
 	@Test
 	public void getMovieShow() {
 		List<MovieShow> rows = client.getAllMovieShows();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addMovieShow();
+			rows = client.getAllMovieShows();
+		}
 		
 		MovieShow rowOri = rows.get(0);
 		MovieShow rowFound = client.getMovieShowById(rowOri.getId());
@@ -83,8 +108,10 @@ public class MovieShowResourceTest {
 	@Test
 	public void updateMovieShow() {
 		List<MovieShow> rows = client.getAllMovieShows();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addMovieShow();
+			rows = client.getAllMovieShows();
+		}
 		
 		MovieShow rowOri = rows.get(0);
 		rowOri.setMovieDate("01-01-2011");
@@ -108,8 +135,10 @@ public class MovieShowResourceTest {
 	@Test
 	public void deleteMovieShow() {
 		List<MovieShow> rows = client.getAllMovieShows();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addMovieShow();
+			rows = client.getAllMovieShows();
+		}
 		
 		MovieShow rowOri = rows.get(0);
 		System.out.println(rowOri);

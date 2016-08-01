@@ -26,13 +26,17 @@ public class ShowSeatResourceTest {
 	private MovieShowResourceClient msclient = null;
 	private TicketResourceClient ticketclient = null;
 	
-	@Before
-	public void setUp() throws Exception {
+	public ShowSeatResourceTest() {
 		WebTarget service = TestHelper.getService();
 		client = new ShowSeatResourceClient(service);
 		seatclient = new SeatResourceClient(service);
 		msclient = new MovieShowResourceClient(service);
 		ticketclient = new TicketResourceClient(service);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		
 	}
 
 	@After
@@ -42,8 +46,23 @@ public class ShowSeatResourceTest {
 	@Test
 	public void addShowSeat() {
 		List<MovieShow> mshows = msclient.getAllMovieShows();
+		if(mshows==null || mshows.size()==0) {
+			MovieShowResourceTest msrt = new MovieShowResourceTest();
+			msrt.addMovieShow();
+			mshows = msclient.getAllMovieShows();
+		}
 		List<Seat> seats = seatclient.getAllSeats();
+		if(seats==null || seats.size()==0) {
+			SeatResourceTest srt = new SeatResourceTest();
+			srt.addSeat();
+			seats = seatclient.getAllSeats();
+		}
 		List<Ticket> tickets = ticketclient.getAllTickets();
+		if(tickets==null || tickets.size()==0){
+			TicketResourceTest trt = new TicketResourceTest();
+			trt.addTicket();
+			tickets = ticketclient.getAllTickets();
+		}
 		MovieShow mshow = mshows.get(0);
 		Seat seat = seats.get(0);
 		Ticket ticket = tickets.get(0);
@@ -58,6 +77,10 @@ public class ShowSeatResourceTest {
 	@Test
 	public void getShowSeats() {
 		List<ShowSeat> rows = client.getAllShowSeats();
+		if(rows==null || rows.size()==0){
+			addShowSeat();
+			rows = client.getAllShowSeats();
+		}
 		Assert.assertNotNull(rows);
 	}
 
@@ -65,7 +88,10 @@ public class ShowSeatResourceTest {
 	public void getShowSeat() {
 		List<ShowSeat> rows = client.getAllShowSeats();
 		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows.size()==0) {
+			addShowSeat();
+			rows = client.getAllShowSeats();
+		}
 		
 		ShowSeat rowOri = rows.get(0);
 		ShowSeat rowFound = client.getShowSeatById(rowOri.getId());
@@ -81,7 +107,10 @@ public class ShowSeatResourceTest {
 	public void deleteShowSeat() {
 		List<ShowSeat> rows = client.getAllShowSeats();
 		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows.size()==0) {
+			addShowSeat();
+			rows = client.getAllShowSeats();
+		}
 		
 		ShowSeat rowOri = rows.get(0);
 		System.out.println(rowOri);

@@ -23,12 +23,16 @@ public class TicketResourceTest {
 	private CustomerResourceClient custclient = null;
 	private MovieShowResourceClient msclient = null;
 	
-	@Before
-	public void setUp() throws Exception {
+	public TicketResourceTest() {
 		WebTarget service = TestHelper.getService();
 		client = new TicketResourceClient(service);
 		custclient = new CustomerResourceClient(service);
 		msclient = new MovieShowResourceClient(service);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		
 	}
 
 	@After
@@ -38,7 +42,17 @@ public class TicketResourceTest {
 	@Test
 	public void addTicket() {
 		List<MovieShow> mshows = msclient.getAllMovieShows();
+		if(mshows==null || mshows.size()==0){
+			MovieShowResourceTest msrt = new MovieShowResourceTest();
+			msrt.addMovieShow();
+			mshows = msclient.getAllMovieShows();
+		}
 		List<Customer> customers = custclient.getAllCustomers();
+		if(customers==null || customers.size()==0){
+			CustomerResourceTest crt = new CustomerResourceTest();
+			crt.addCustomer();
+			customers = custclient.getAllCustomers();
+		}
 		MovieShow mshow = mshows.get(0);
 		Customer cust = customers.get(0);
 				
@@ -52,14 +66,20 @@ public class TicketResourceTest {
 	@Test
 	public void getTickets() {
 		List<Ticket> rows = client.getAllTickets();
+		if(rows==null || rows.size()==0){
+			addTicket();
+			rows = client.getAllTickets();
+		}
 		Assert.assertNotNull(rows);
 	}
 
 	@Test
 	public void getTicket() {
 		List<Ticket> rows = client.getAllTickets();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addTicket();
+			rows = client.getAllTickets();
+		}
 		
 		Ticket rowOri = rows.get(0);
 		Ticket rowFound = client.getTicketById(rowOri.getId());
@@ -73,8 +93,10 @@ public class TicketResourceTest {
 	@Test
 	public void updateTicket() {
 		List<Ticket> rows = client.getAllTickets();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addTicket();
+			rows = client.getAllTickets();
+		}
 		
 		Ticket rowOri = rows.get(0);
 		rowOri.setTotalCost(110f);
@@ -98,8 +120,10 @@ public class TicketResourceTest {
 	@Test
 	public void deleteTicket() {
 		List<Ticket> rows = client.getAllTickets();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addTicket();
+			rows = client.getAllTickets();
+		}
 		
 		Ticket rowOri = rows.get(0);
 		System.out.println(rowOri);

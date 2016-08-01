@@ -23,12 +23,16 @@ public class SeatResourceTest {
 	private ScreenResourceClient scrclient = null;
 	private CategoryResourceClient catclient = null;
 	
-	@Before
-	public void setUp() throws Exception {
+	public SeatResourceTest() {
 		WebTarget service = TestHelper.getService();
 		client = new SeatResourceClient(service);
 		scrclient = new ScreenResourceClient(service);
 		catclient = new CategoryResourceClient(service);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		
 	}
 
 	@After
@@ -38,7 +42,17 @@ public class SeatResourceTest {
 	@Test
 	public void addSeat() {
 		List<ScreenInclSeats> screens = scrclient.getAllScreens();
+		if(screens==null || screens.size()==0){
+			ScreenResourceTest srt = new ScreenResourceTest();
+			srt.addScreen();
+			screens = scrclient.getAllScreens();
+		}
 		List<Category> categories = catclient.getAllCategories();
+		if(categories==null || categories.size()==0){
+			CategoryResourceTest crt = new CategoryResourceTest();
+			crt.addCategory();
+			categories = catclient.getAllCategories();
+		}
 		ScreenInclSeats scr = screens.get(0);
 		Category cat = categories.get(0);
 		
@@ -54,14 +68,20 @@ public class SeatResourceTest {
 	@Test
 	public void getSeats() {
 		List<Seat> rows = client.getAllSeats();
+		if(rows==null || rows.size()==0){
+			addSeat();
+			rows = client.getAllSeats();
+		}
 		Assert.assertNotNull(rows);
 	}
 
 	@Test
 	public void getSeat() {
 		List<Seat> rows = client.getAllSeats();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addSeat();
+			rows = client.getAllSeats();
+		}
 		
 		Seat rowOri = rows.get(0);
 		Seat rowFound = client.getSeatById(rowOri.getId());
@@ -75,8 +95,10 @@ public class SeatResourceTest {
 	@Test
 	public void updateSeat() {
 		List<Seat> rows = client.getAllSeats();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addSeat();
+			rows = client.getAllSeats();
+		}
 		
 		Seat rowOri = rows.get(0);
 		rowOri.setName("2B");
@@ -106,8 +128,10 @@ public class SeatResourceTest {
 	@Test
 	public void deleteSeat() {
 		List<Seat> rows = client.getAllSeats();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addSeat();
+			rows = client.getAllSeats();
+		}
 		
 		Seat rowOri = rows.get(0);
 		System.out.println(rowOri);

@@ -17,10 +17,14 @@ public class ShowResourceTest {
 
 	private ShowResourceClient client = null;
 	
-	@Before
-	public void setUp() throws Exception {
+	public ShowResourceTest() {
 		WebTarget service = TestHelper.getService();
 		client = new ShowResourceClient(service);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		
 	}
 
 	@After
@@ -29,11 +33,12 @@ public class ShowResourceTest {
 
 	@Test
 	public void addShow() {
-		Show row = new Show(101l, "Show1", "0700", "0800");
+		String showName = "Show" + System.nanoTime();
+		Show row = new Show(101l, showName, "0700", "0800");
 		row = client.addShow(row);
 		System.out.println(row);
 		Assert.assertNotEquals(101l, row.getId().longValue());
-		Assert.assertEquals("1A", row.getShowName());
+		Assert.assertEquals(showName, row.getShowName());
 		Assert.assertEquals("0700", row.getStartTime());
 		Assert.assertEquals("0800", row.getEndTime());
 	}
@@ -41,14 +46,20 @@ public class ShowResourceTest {
 	@Test
 	public void getShows() {
 		List<Show> rows = client.getAllShows();
+		if(rows==null || rows.size()==0){
+			addShow();
+			rows = client.getAllShows();
+		}
 		Assert.assertNotNull(rows);
 	}
 
 	@Test
 	public void getShow() {
 		List<Show> rows = client.getAllShows();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addShow();
+			rows = client.getAllShows();
+		}
 		
 		Show rowOri = rows.get(0);
 		Show rowFound = client.getShowById(rowOri.getId());
@@ -62,11 +73,14 @@ public class ShowResourceTest {
 	@Test
 	public void updateShow() {
 		List<Show> rows = client.getAllShows();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addShow();
+			rows = client.getAllShows();
+		}
 		
+		String showName = "Show" + System.nanoTime();
 		Show rowOri = rows.get(0);
-		rowOri.setShowName("Show1a");
+		rowOri.setShowName(showName);
 		rowOri.setStartTime("0701");
 		rowOri.setEndTime("0801");
 
@@ -74,7 +88,7 @@ public class ShowResourceTest {
 		
 		//Returned value is updated value
 		Assert.assertNotEquals(101l, rowOri.getId().longValue());
-		Assert.assertEquals("Show1a", rowOri.getShowName());
+		Assert.assertEquals(showName, rowOri.getShowName());
 		Assert.assertEquals("0701", rowOri.getStartTime());
 		Assert.assertEquals("0801", rowOri.getEndTime());
 		
@@ -83,7 +97,7 @@ public class ShowResourceTest {
 		
 		//Got value is updated value
 		Assert.assertEquals(rowOri.getId(), rowFound.getId());
-		Assert.assertEquals("Show1a", rowFound.getShowName());
+		Assert.assertEquals(showName, rowFound.getShowName());
 		Assert.assertEquals("0701", rowFound.getStartTime());
 		Assert.assertEquals("0801", rowFound.getEndTime());
 
@@ -93,8 +107,10 @@ public class ShowResourceTest {
 	@Test
 	public void deleteShow() {
 		List<Show> rows = client.getAllShows();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addShow();
+			rows = client.getAllShows();
+		}
 		
 		Show rowOri = rows.get(0);
 		System.out.println(rowOri);

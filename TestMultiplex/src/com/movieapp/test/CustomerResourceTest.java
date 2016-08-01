@@ -17,10 +17,14 @@ public class CustomerResourceTest {
 
 	private CustomerResourceClient client = null;
 	
-	@Before
-	public void setUp() throws Exception {
+	public CustomerResourceTest() {
 		WebTarget service = TestHelper.getService();
 		client = new CustomerResourceClient(service);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		
 	}
 
 	@After
@@ -29,10 +33,11 @@ public class CustomerResourceTest {
 
 	@Test
 	public void addCustomer() {
-		Customer row = new Customer(101l, "Cust1", "cust1@gmail.com", "9009009001");
+		String custName = "Cust" + System.nanoTime();
+		Customer row = new Customer(101l, custName, "cust1@gmail.com", "9009009001");
 		row = client.addCustomer(row);
 		Assert.assertNotEquals(101l, row.getId().longValue());
-		Assert.assertEquals("Cust1", row.getName());
+		Assert.assertEquals(custName, row.getName());
 		Assert.assertEquals("cust1@gmail.com", row.getEmail());
 		Assert.assertEquals("9009009001", row.getPhoneNumber());
 	}
@@ -40,14 +45,20 @@ public class CustomerResourceTest {
 	@Test
 	public void getCustomers() {
 		List<Customer> rows = client.getAllCustomers();
+		if(rows==null || rows.size()==0) {
+			addCustomer();
+			rows = client.getAllCustomers();
+		}
 		Assert.assertNotNull(rows);
 	}
 
 	@Test
 	public void getCustomer() {
 		List<Customer> rows = client.getAllCustomers();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0) {
+			addCustomer();
+			rows = client.getAllCustomers();
+		}
 		
 		Customer rowOri = rows.get(0);
 		Customer rowFound = client.getCustomerById(rowOri.getId());
@@ -61,11 +72,14 @@ public class CustomerResourceTest {
 	@Test
 	public void updateCustomer() {
 		List<Customer> rows = client.getAllCustomers();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0) {
+			addCustomer();
+			rows = client.getAllCustomers();
+		}
 		
+		String custName = "Cust" + System.nanoTime();
 		Customer rowOri = rows.get(0);
-		rowOri.setName("Cust1a");
+		rowOri.setName(custName);
 		rowOri.setEmail("cust1a@gmail.com");
 		rowOri.setPhoneNumber("9009009901");
 
@@ -73,7 +87,7 @@ public class CustomerResourceTest {
 		
 		//Returned value is updated value
 		Assert.assertNotEquals(101l, rowOri.getId().longValue());
-		Assert.assertEquals("Cust1a", rowOri.getName());
+		Assert.assertEquals(custName, rowOri.getName());
 		Assert.assertEquals("cust1a@gmail.com", rowOri.getEmail());
 		Assert.assertEquals("9009009901", rowOri.getPhoneNumber());
 		
@@ -82,7 +96,7 @@ public class CustomerResourceTest {
 		
 		//Got value is updated value
 		Assert.assertEquals(rowOri.getId(), rowFound.getId());
-		Assert.assertEquals("Cust1a", rowFound.getName());
+		Assert.assertEquals(custName, rowFound.getName());
 		Assert.assertEquals("cust1a@gmail.com", rowFound.getEmail());
 		Assert.assertEquals("9009009901", rowFound.getPhoneNumber());
 	}
@@ -91,8 +105,10 @@ public class CustomerResourceTest {
 	@Test
 	public void deleteCustomer() {
 		List<Customer> rows = client.getAllCustomers();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0) {
+			addCustomer();
+			rows = client.getAllCustomers();
+		}
 		
 		Customer rowOri = rows.get(0);
 		System.out.println(rowOri);

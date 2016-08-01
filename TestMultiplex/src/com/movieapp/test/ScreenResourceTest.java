@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.movieapp.beans.Seat;
 import com.movieapp.client.ScreenResourceClient;
 import com.movieapp.wrappers.ScreenInclSeats;
 
@@ -19,10 +18,14 @@ public class ScreenResourceTest {
 
 	private ScreenResourceClient client = null;
 	
-	@Before
-	public void setUp() throws Exception {
+	public ScreenResourceTest() {
 		WebTarget service = TestHelper.getService();
 		client = new ScreenResourceClient(service);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		
 	}
 
 	@After
@@ -32,7 +35,7 @@ public class ScreenResourceTest {
 	@Test
 	public void addScreen() {
 		String screenName = String.valueOf(System.currentTimeMillis());
-		ScreenInclSeats row = new ScreenInclSeats(101l, screenName, 5, 7, new ArrayList<Seat>());
+		ScreenInclSeats row = new ScreenInclSeats(101l, screenName, 5, 7, new ArrayList<Long>());
 		row = client.addScreen(row);
 		System.out.println(row);
 		Assert.assertNotEquals(101l, row.getId().longValue());
@@ -44,14 +47,20 @@ public class ScreenResourceTest {
 	@Test
 	public void getScreens() {
 		List<ScreenInclSeats> rows = client.getAllScreens();
+		if(rows==null || rows.size()==0){
+			addScreen();
+			rows = client.getAllScreens();
+		}
 		Assert.assertNotNull(rows);
 	}
 
 	@Test
 	public void getScreen() {
 		List<ScreenInclSeats> rows = client.getAllScreens();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addScreen();
+			rows = client.getAllScreens();
+		}
 		
 		ScreenInclSeats rowOri = rows.get(0);
 		ScreenInclSeats rowFound = client.getScreenById(rowOri.getId());
@@ -65,11 +74,14 @@ public class ScreenResourceTest {
 	@Test
 	public void updateScreen() {
 		List<ScreenInclSeats> rows = client.getAllScreens();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addScreen();
+			rows = client.getAllScreens();
+		}
 		
+		String screenName = String.valueOf(System.currentTimeMillis());
 		ScreenInclSeats rowOri = rows.get(0);
-		rowOri.setScreenName("Screen1a");
+		rowOri.setScreenName(screenName);
 		rowOri.setScreenRows(6);
 		rowOri.setScreenColumns(8);
 
@@ -77,7 +89,7 @@ public class ScreenResourceTest {
 		
 		//Returned value is updated value
 		Assert.assertNotEquals(101l, rowOri.getId().longValue());
-		Assert.assertEquals("Screen1a", rowOri.getScreenName());
+		Assert.assertEquals(screenName, rowOri.getScreenName());
 		Assert.assertEquals(6, rowOri.getScreenRows());
 		Assert.assertEquals(8, rowOri.getScreenColumns());
 		
@@ -86,7 +98,7 @@ public class ScreenResourceTest {
 		
 		//Got value is updated value
 		Assert.assertEquals(rowOri.getId(), rowFound.getId());
-		Assert.assertEquals("Screen1a", rowFound.getScreenName());
+		Assert.assertEquals(screenName, rowFound.getScreenName());
 		Assert.assertEquals(6, rowFound.getScreenRows());
 		Assert.assertEquals(8, rowFound.getScreenColumns());
 	}
@@ -95,8 +107,10 @@ public class ScreenResourceTest {
 	@Test
 	public void deleteScreen() {
 		List<ScreenInclSeats> rows = client.getAllScreens();
-		Assert.assertNotNull(rows);
-		if(rows.size()==0) return;
+		if(rows==null || rows.size()==0){
+			addScreen();
+			rows = client.getAllScreens();
+		}
 		
 		ScreenInclSeats rowOri = rows.get(0);
 		System.out.println(rowOri);
